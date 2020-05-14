@@ -24,7 +24,7 @@ class PredictStatus_ICare(BaseTransformer):
     def __init__(self, input_items, predStatus, output_items):
         self.input_items = input_items
         self.output_items = output_items
-        self.predStatus = f"{predStatus}"
+        self.predStatus = str(predStatus)
         super().__init__()
 
     def execute(self, df):
@@ -48,7 +48,7 @@ class PredictStatus_ICare(BaseTransformer):
                       )
         inputs.append(ui.UISingle(
                 name = 'predStatus',
-                datatype=string)
+                datatype=str)
                       )
         outputs = []
         return (inputs,outputs)
