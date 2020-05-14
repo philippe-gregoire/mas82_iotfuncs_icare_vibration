@@ -24,13 +24,15 @@ class PredictStatus_ICare(BaseTransformer):
     def __init__(self, input_items, predStatus, output_items):
         self.input_items = input_items
         self.output_items = output_items
-        self.factor = string(predStatus)
+        self.predStatus = f"{predStatus}"
         super().__init__()
 
     def execute(self, df):
+        print("Enter Execute")
         df = df.copy()
+        print("Apply factor")
         for i,input_item in enumerate(self.input_items):
-            df[self.output_items[i]] = df[input_item] * self.factor
+            df[self.output_items[i]] = self.predStatus
         return df
 
     @classmethod
