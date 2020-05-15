@@ -4,8 +4,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='goodvibrations',
-    version='0.0.1',
+    version='0.0.2',
     packages=find_packages(),
+    package_data={
+        'goodvibrations': ['VE-1138_All_PP3_preproc.pickle','VE-1138_All_PP3_feateng.pickle','VE-1138_All_PP3_predict.pickle'],
+    },
     install_requires=[
         'dill==0.3.0',
         'ibm-cos-sdk==2.1.3',
@@ -23,7 +26,8 @@ setup(
         'pyod==0.7.5',
         'scikit-image==0.16.2',
         'sqlalchemy==1.3.10',
-        'tabulate==0.8.5'
+        'tabulate==0.8.5',
+        'autoai_libs'
     ],
     extras_require = {
         'kafka':  ['confluent-kafka==0.11.5']
