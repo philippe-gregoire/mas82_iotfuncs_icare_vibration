@@ -20,14 +20,14 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     package_data={
-        'goodvibrations': ['VibConditionPrediction_P3.pickle'],
+        'goodvibrations': ['VibConditionPrediction_P3_skl_v0.20.3.pickle'],
     },
     install_requires=[
         #'dill==0.3.0',
         #'ibm-cos-sdk==2.1.3',
         #'numpy==1.17.3',
         #'pandas>=0.24.0',
-        'scikit-learn==0.23.2',
+        'scikit-learn==0.20.3',
         #'scipy>=1.1.0',
         #'requests==2.18.4',
         #'urllib3==1.22',

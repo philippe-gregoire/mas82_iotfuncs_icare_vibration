@@ -28,6 +28,8 @@ logger = logging.getLogger(__name__)
 
 PACKAGE_URL = f"git+https://github.com/philippe-gregoire/mas82_iotfuncs_icare_vibration@mas82_starter"
 
+PIPELINE_FILE='VibConditionPrediction_P3_skl_v0.20.3.pickle'
+
 class PredictCondition(BaseTransformer):
     ''' Predict an equipment condition by applying an AutoAI-generated model
 
@@ -50,12 +52,11 @@ class PredictCondition(BaseTransformer):
         import sklearn
         logger.info(f"Using sklearn version {sklearn.__version__}")
 
-        pipeline_file='VibConditionPrediction_P3.pickle'
-        logger.info(f"Loading pipeline from file {pipeline_file}")
+        logger.info(f"Loading pipeline from file {PIPELINE_FILE}")
 
-        with io.open(os.path.join(os.path.dirname(goodvibrations.__file__),pipeline_file),'rb') as f:
+        with io.open(os.path.join(os.path.dirname(goodvibrations.__file__),PIPELINE_FILE),'rb') as f:
             self.pipeline=pickle.loads(f.read())
-        logger.info(f"Loaded pipeline from {pipeline_file}")
+        logger.info(f"Loaded pipeline from {PIPELINE_FILE}")
         logger.info(self.pipeline)
 
     def execute(self, df):
