@@ -41,7 +41,7 @@ class PredictCondition(BaseTransformer):
     def __init__(self, condition):
         super().__init__()
         self.condition = condition
-        self.columns=['deviceid', 'Order1_fftV', 'Order1_fftG', 'Order2_fftV', 'Order2_fftG', 'Order3_fftV', 'Order3_fftG']
+        self.columns=['id', 'Order1_fftV', 'Order1_fftG', 'Order2_fftV', 'Order2_fftG', 'Order3_fftV', 'Order3_fftG']
 
         logger.info(f"Init of function for condition ={self.condition} and columns={self.columns}")
 
