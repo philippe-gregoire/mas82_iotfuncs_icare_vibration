@@ -28,11 +28,16 @@ def main(argv):
   from goodvibrations.predictStatus import PredictCondition
   print(f"Registering function")
   db.unregister_functions(["PredictCondition"])
-  db.register_functions([PredictCondition])
+  try:
+    db.register_functions([PredictCondition])
+  except Exception as exc:
+    print(exc)
 
   fn = PredictCondition(condition='predStatus')
   df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
   print(df)
 
 if __name__ == "__main__":
+    import logging
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     main(sys.argv)

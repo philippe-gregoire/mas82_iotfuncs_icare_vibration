@@ -29,7 +29,13 @@ logger = logging.getLogger(__name__)
 PACKAGE_URL = f"git+https://github.com/philippe-gregoire/mas82_iotfuncs_icare_vibration@mas82_starter"
 
 class PredictCondition(BaseTransformer):
+    ''' Predict an equipment condition by applying an AutoAI-generated model
 
+        Here we will apply the packaged VibConditionPrediction_P3 pickled model
+        to the 'deviceid', 'Order1_fftV', 'Order1_fftG', 'Order2_fftV', 'Order2_fftG', 'Order3_fftV', 'Order3_fftG'
+        columns from the I-Care sensor
+
+    '''
     def __init__(self, condition):
         super().__init__()
         self.condition = condition
@@ -38,6 +44,9 @@ class PredictCondition(BaseTransformer):
         import os,io,pickle
         import goodvibrations
         #import autoai_libs
+
+        import sklearn
+        logger.info(f"Using sklearn version {sklearn.__version__}")
 
         pipeline_file='VibConditionPrediction_P3.pickle'
 
