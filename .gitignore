@@ -1,6 +1,6 @@
 #credentials for testing #
 ##########################
-scripts/credentials.json
+scripts/credentials_as_*.json
 
 #debug file #
 #############
@@ -111,19 +111,7 @@ Thumbs.db
 .spyproject/encoding.ini
 .spyproject/vcs.ini
 .spyproject/workspace.ini
-scripts/credentials_as_dev.json
-scripts/df_test_entity_for_multiplytwoitems.csv
-scripts/df_test_entity_for_pythonfunction.csv
-scripts/data_writer_data_writer_input_level_.csv
-scripts/EntityType_widgets_trace_20190516051848439272.json
+scripts/credentials_as_*.json
+scripts/EntityType_widgets_trace_*.json
 *.csv
-*.json
-scripts/register_bifs.py
-scripts/intro_tutorial.py
-scripts/intro_tutorial.py
-scripts/intro_tutorial.py
-tests/test_broken_functions.py
-tests/test_merge_dt_test.py
-tests/test_specialization_of_function.py
-tests/test_specialization_of_function.py
-tests/test_broken_functions.py
+*/*_cert_*.pem
