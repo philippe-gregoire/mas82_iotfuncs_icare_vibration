@@ -41,6 +41,8 @@ class PredictCondition(BaseTransformer):
         self.condition = condition
         self.columns=['deviceid', 'Order1_fftV', 'Order1_fftG', 'Order2_fftV', 'Order2_fftG', 'Order3_fftV', 'Order3_fftG']
 
+        logger.info(f"Init of function for condition ={self.condition} and columns={self.columns}")
+
         import os,io,pickle
         import goodvibrations
         #import autoai_libs
@@ -49,6 +51,7 @@ class PredictCondition(BaseTransformer):
         logger.info(f"Using sklearn version {sklearn.__version__}")
 
         pipeline_file='VibConditionPrediction_P3.pickle'
+        logger.info(f"Loading pipeline from file {pipeline_file}")
 
         with io.open(os.path.join(os.path.dirname(goodvibrations.__file__),pipeline_file),'rb') as f:
             self.pipeline=pickle.loads(f.read())
