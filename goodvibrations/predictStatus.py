@@ -13,11 +13,8 @@ logger = logging.getLogger(__name__)
 
 # Specify the URL to your package here.
 # This URL must be accessible via pip install.
-# Example assumes the repository is private.
-# Replace XXXXXX with your personal access token.
 
-token= '2c25e35482cff0323dc9c5b0051b7413918b9fdd'
-PACKAGE_URL = f"https://{token}@github.com/philippe-gregoire/iotfgoodvibs@starter_package"
+PACKAGE_URL = f"https://github.com/philippe-gregoire/mas82_iotfuncs_icare_vibration@mas82_starter"
 
 import autoai_libs
 

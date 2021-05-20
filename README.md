@@ -1,12 +1,8 @@
-# Empty Python Package
+# Maximo Monitor 8.2 Vibration Analysis for I-Care sensors
 
-This package is empty. 
-
-To install this package: 
 
 ```
-pip install git+git://github.com/ibm-watson-iot/functions@production --upgrade
-```
+pip install git+git://github.com/philippe-gregoire/mas82_iotfuncs_icare_vibration@mas82_starter --upgrade
 
 Prereqs are:
 
