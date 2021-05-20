@@ -1,26 +1,38 @@
-import datetime as dt
-import json
-import pandas as pd
-import numpy as np
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
-from iotfunctions.base import BaseTransformer
-from iotfunctions.metadata import EntityType
+# *****************************************************************************
+# © Copyright IBM Corp. 2021.  All Rights Reserved.
+#
+# This program and the accompanying materials
+# are made available under the terms of the Apache V2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# *****************************************************************************
+# Vibration condition prediction IoTFunction for MAS Monitor testere
+#
+# Author: Philippe Gregoire - IBM in France
+# *****************************************************************************
+
 from iotfunctions.db import Database
-from iotfunctions import ui
+import os,sys,io,json
 
-with open('credentials_as.json', encoding='utf-8') as F:
-  credentials = json.loads(F.read())
-db_schema = None
-db = Database(credentials=credentials)
+def main(argv):
+  sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__),'..')))
 
-from goodvibrations.predictStatus import PredictStatus_ICare
-fn = PredictStatus_ICare(
-    input_items = ['speed', 'speed_recalculated', 'peak-to-peak', 'peak_plus',
-       'peak_minus', 'order1', 'crest_factor', 'HF', 'globalG', 'globalV',
-       'global_sousSynch', 'non_synchroneG', 'synchroneG', 'non_synchroneV',
-       'synchroneV'],
-    predStatus = 'Green',
-    output_items = ['predStaus']
-              )
-df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
-print(df)
+  credPath=os.path.join(os.path.dirname(__file__),f"credentials_as_{os.environ['USERNAME']}.json")
+  print(f"Loading credentials from {credPath}")
+  with io.open(credPath, encoding='utf-8') as F:
+    credentials = json.loads(F.read())
+  db_schema = None
+  db = Database(credentials=credentials)
+
+  from goodvibrations.predictStatus import PredictCondition
+  print(f"Registering function")
+  db.unregister_functions(["PredictCondition"])
+  db.register_functions([PredictCondition])
+
+  fn = PredictCondition(condition='predStatus')
+  df = fn.execute_local_test(db=db, db_schema=db_schema, generate_days=1,to_csv=True)
+  print(df)
+
+if __name__ == "__main__":
+    main(sys.argv)

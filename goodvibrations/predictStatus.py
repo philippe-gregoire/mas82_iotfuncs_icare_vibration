@@ -1,10 +1,22 @@
-import inspect
+# *****************************************************************************
+# © Copyright IBM Corp. 2021.  All Rights Reserved.
+#
+# This program and the accompanying materials
+# are made available under the terms of the Apache V2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# *****************************************************************************
+# Vibration condition prediction IoTFunction for MAS Monitor
+#
+# Uses a pipeline that has been generated using AutoAI and pickled
+#
+# This function applies the unpickled pipeline to incoming dataframe
+#
+# Author: Philippe Gregoire - IBM in France
+# *****************************************************************************
+
 import logging
-import datetime as dt
-import math
-from sqlalchemy.sql.sqltypes import TIMESTAMP,VARCHAR
-import numpy as np
-import pandas as pd
 
 from iotfunctions.base import BaseTransformer
 from iotfunctions import ui
@@ -16,59 +28,42 @@ logger = logging.getLogger(__name__)
 
 PACKAGE_URL = f"https://github.com/philippe-gregoire/mas82_iotfuncs_icare_vibration@mas82_starter"
 
-import autoai_libs
 
-class PredictStatus_ICare(BaseTransformer):
+class PredictCondition(BaseTransformer):
 
-    def __init__(self, input_items, predStatus, output_items):
-        self.input_items = input_items
-        self.output_items = output_items
-        self.predStatus = str(predStatus)
-
-        import pickle
-        import io
-        import os
-        import goodvibrations
-
-        FILE='VE-1138_All'
-        pn='P3'
-        #target='Status'
-
-        self.pipes={}
-        for p in ('preproc','feateng','predict'):
-            with io.open(f"{os.path.join(os.path.dirname(goodvibrations.__file__),FILE)}_P{pn}_{p}.pickle",'rb') as f:
-                self.pipes[p]=pickle.loads(f.read())
-        print("Loaded models")
-
+    def __init__(self, condition):
         super().__init__()
+        self.condition = condition
+        self.columns=['deviceid', 'Order1_fftV', 'Order1_fftG', 'Order2_fftV', 'Order2_fftG', 'Order3_fftV', 'Order3_fftG']
+
+        import os,io,pickle
+        import goodvibrations
+        #import autoai_libs
+
+        pipeline_file='VibConditionPrediction_P3.pickle'
+
+        with io.open(os.path.join(os.path.dirname(goodvibrations.__file__),pipeline_file),'rb') as f:
+            self.pipeline=pickle.loads(f.read())
+        logger.info(f"Loaded pipeline from {pipeline_file}")
+        logger.info(self.pipeline)
 
     def execute(self, df):
-        print("Enter Execute")
-        #df = df.copy()
-        print(f"Apply factor to {len(self.input_items)}")
+        logger.info(f"Enter Execute with {len(df)} rows")
+        logger.info(df.describe(include='all'))
 
-        preV=self.pipes['preproc'].transform(df.values)
-        feV=self.pipes['feateng'].transform(preV)
-        predV=self.pipes['predict'].predict(feV)
-        print(f"predicted values={predV}")
-        for i,input_item in enumerate(self.output_items):
-            df[self.output_items[i]] = predV
+        # Filter out rows where we have NaNs
+        import math
+        df=df[df[self.columns[1:]].apply(lambda row: all([not math.isnan(c) for c in row]),axis=1)].copy()
+        logger.info(f"Retaining {len(df)} non-NaN rows to predict on")
+
+        df[self.condition]=self.pipeline.predict(df.reset_index()[self.columns].to_numpy())
+
+        logger.info(f"predicted values statistics:")
+        logger.info(df[self.condition].value_counts())
+
         return df
 
     @classmethod
     def build_ui(cls):
-        #define arguments that behave as function inputs
-        inputs = []
-        inputs.append(ui.UIMultiItem(
-                name = 'input_items',
-                datatype=float,
-                description = "Data items adjust",
-                output_item = 'output_items',
-                is_output_datatype_derived = True)
-                      )
-        inputs.append(ui.UISingle(
-                name = 'predStatus',
-                datatype=str)
-                      )
-        outputs = []
-        return (inputs,outputs)
+        # We don't need specific input, and output the predicted condition
+        return ([],[ui.UIFunctionOutSingle(name='condition', datatype=str, description='Predicted condition')])
